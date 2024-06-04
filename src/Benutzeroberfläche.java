@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,9 +15,6 @@ public class Benutzeroberfläche extends JFrame {
     private int initialDelay;
     private int schwierigkeitsgrad;
     private boolean isPaused; // Neue Variable für den Pausestatus
-
-
-
 
     // Methode zur Initialisierung der Benutzeroberfläche
     private void initUI() {
@@ -45,8 +43,6 @@ public class Benutzeroberfläche extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Standard-Schließoperation setzen
         setLocationRelativeTo(null); // Fenster zentrieren
 
-
-
         // KeyListener hinzufügen, um Tastendrücke zu verarbeiten
         addKeyListener(new KeyAdapter() {
             @Override
@@ -73,7 +69,7 @@ public class Benutzeroberfläche extends JFrame {
             }
         });
 
-
+        startTimer(); // Timer starten
     }
 
     public Benutzeroberfläche(int schwierigkeitsgrad) {
@@ -84,19 +80,19 @@ public class Benutzeroberfläche extends JFrame {
 
     private void setInitialDelay(int schwierigkeitsgrad) {
         switch (schwierigkeitsgrad) {
-            case 0://Leicht
+            case 0: // Leicht
                 initialDelay = 800;
                 break;
-            case 1://Mittel
+            case 1: // Mittel
                 initialDelay = 500;
                 break;
-            case 2://Schwer
+            case 2: // Schwer
                 initialDelay = 250;
                 break;
             case 3: // Sehr schwer
                 initialDelay = 180;
                 break;
-            case 4: // unmöglich
+            case 4: // Unmöglich
                 initialDelay = 3;
                 break;
             default:
@@ -104,7 +100,23 @@ public class Benutzeroberfläche extends JFrame {
         }
     }
 
-
+    // Methode zum Starten des Timers
+    private void startTimer() {
+        timer = new Timer(initialDelay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!spiel.istSpielVorbei()) {
+                    spiel.fallen();
+                    scoreLabel.setText("Score: " + spiel.getScore() + "  Highscore: " + highscore);
+                    spielfeldPanel.repaint();
+                } else {
+                    timer.stop();
+                    showGameOverMenu();
+                }
+            }
+        });
+        timer.start();
+    }
 
     // Methode zum Pausieren/Fortsetzen des Spiels
     private void togglePause() {
@@ -119,8 +131,6 @@ public class Benutzeroberfläche extends JFrame {
 
     // Methode zum Anzeigen des Pausemenüs
     private void showPauseMenu() {
-
-
         JDialog pauseDialog = new JDialog(this, "Pause", true);
         pauseDialog.setLayout(new BorderLayout());
         pauseDialog.setSize(350, 300);// größe des Pausemenüs
@@ -143,9 +153,6 @@ public class Benutzeroberfläche extends JFrame {
         contentPanel.add(titleLabel, BorderLayout.CENTER);
         contentPanel.add(menuPanel, BorderLayout.SOUTH);
 
-
-
-
         JButton continueButton = new JButton("Fortsetzen");
         customizeButton(continueButton);
         continueButton.addActionListener(e -> {
@@ -165,74 +172,29 @@ public class Benutzeroberfläche extends JFrame {
         customizeButton(exitButton);
         exitButton.addActionListener(e -> {
             pauseDialog.dispose();
-            System.exit(0);
+            dispose();
         });
 
-        JButton startScreenButton = new JButton("Startbildschirm"); // Added button for returning to the Startbildschirm
-        customizeButton(startScreenButton);
-        startScreenButton.addActionListener(e -> {
-            pauseDialog.dispose();
-            setVisible(false);
-            new Startbildschirm().starten(); // Zeige den Startbildschirm
-        });
-
-        // Reihenfolge für die Buttons im Pausemenü
-        contentPanel.add(continueButton); // Fortsetzen
-        contentPanel.add(restartButton); // Beenden
-        contentPanel.add(startScreenButton); // zum Startbilschirm
-        contentPanel.add(exitButton); //Verlassen
+        contentPanel.add(continueButton);
+        contentPanel.add(restartButton);
+        contentPanel.add(exitButton);
 
         pauseDialog.add(contentPanel, BorderLayout.CENTER);
         pauseDialog.setVisible(true);
     }
 
-    // Method to customize button appearance
-    private void customizeButton(JButton button) {
-        button.setBackground(new Color(0, 0, 128));
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setFont(new Font("Arial", Font.BOLD, 18));
-        button.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.WHITE, 2),
-                BorderFactory.createEmptyBorder(10, 20, 10, 20)
-        ));
-    }
 
-    // Methode zum Starten des Timers
-    private void startTimer() {
-        timer = new Timer(initialDelay, e -> {
-            if (!spiel.istSpielVorbei() && !isPaused) { // Prüfen, ob nicht pausiert
-                spiel.fallen();
-                spielfeldPanel.repaint();
-                if (spiel.getScore() > highscore) {
-                    highscore = spiel.getScore();
-                }
-                updateScore();
-            } else if (spiel.istSpielVorbei()) {
-                ((Timer) e.getSource()).stop();
-                showGameOverMenu();
-            }
-        });
-        timer.start();
-    }
 
-    // Methode zum Aktualisieren des Score-Labels
-    public void updateScore() {
-        scoreLabel.setText("     Score: " + spiel.getScore() + "  Highscore: " + highscore + "   Schwierigkeit: " + getSchwierigkeitsgradString());
-    }
-
-    // Methode, um das Spiel zu starten
-    public void starten() {
-        SwingUtilities.invokeLater(() -> {
-            setVisible(true); // Benutzeroberfläche sichtbar machen
-            startTimer(); // Timer starten, um das Tetromino periodisch fallen zu lassen
-        });
-    }
-
+    // Methode zum Anzeigen des Game-Over-Menüs
     private void showGameOverMenu() {
+        // Update high score if current score is greater
+        if (spiel.getScore() > highscore) {
+            highscore = spiel.getScore();
+        }
+
         JDialog gameOverDialog = new JDialog(this, "Game Over", true);
         gameOverDialog.setLayout(new BorderLayout());
-        gameOverDialog.setSize(350, 300);
+        gameOverDialog.setSize(600, 400);
         gameOverDialog.setLocationRelativeTo(this);
 
         JPanel contentPanel = new JPanel(new GridLayout(4, 1));
@@ -241,86 +203,72 @@ public class Benutzeroberfläche extends JFrame {
         JLabel titleLabel = new JLabel("Game Over");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        contentPanel.add(titleLabel, BorderLayout.CENTER);
+        contentPanel.add(titleLabel);
 
-        JLabel scoreLabel = new JLabel("Your Score: " + spiel.getScore());
+        JLabel scoreLabel = new JLabel("Dein Score: " + spiel.getScore() + "   \nHighScore:  " + highscore );
         scoreLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        contentPanel.add(scoreLabel, BorderLayout.CENTER);
+        contentPanel.add(scoreLabel);
 
-        JButton restartButton = new JButton("Restart");
-        restartButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        restartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameOverDialog.dispose();
-                new Benutzeroberfläche(schwierigkeitsgrad).setVisible(true);
-                dispose();
-            }
+        JButton mainMenuButton = new JButton("Zum Startbildschirm");
+        customizeButton(mainMenuButton);
+        mainMenuButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            dispose();
+            new Startbildschirm().setVisible(true); // Gehe zum Startbildschirm
         });
 
-        JButton returnToMenuButton = new JButton("Return to Menu");
-        returnToMenuButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        returnToMenuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameOverDialog.dispose();
-                new Startbildschirm().starten();
-                dispose();
-            }
+
+        JButton restartButton = new JButton("Neustart");
+        customizeButton(restartButton);
+        restartButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            dispose();
+            new Benutzeroberfläche(schwierigkeitsgrad).starten();
+        });
+
+        JButton exitButton = new JButton("Beenden");
+        customizeButton(exitButton);
+        exitButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            dispose();
         });
 
         contentPanel.add(restartButton);
-        contentPanel.add(returnToMenuButton);
-        gameOverDialog.add(contentPanel);
+        contentPanel.add(exitButton);
+        contentPanel.add(mainMenuButton);
+        gameOverDialog.add(contentPanel, BorderLayout.CENTER);
         gameOverDialog.setVisible(true);
     }
 
-    // Methode, um die Schwierigkeit zu ändern
-    private void changeDifficulty() {
-        String[] difficultyOptions = {"Leicht", "Mittel", "Schwer", "Sehr Schwer","Unmöglich"};
-        int newDifficulty = JOptionPane.showOptionDialog(this,
-                "Wähle einen neuen Schwierigkeitsgrad:",
-                "Schwierigkeit ändern",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                difficultyOptions,
-                difficultyOptions[schwierigkeitsgrad]);
+    // Methode zum Anpassen der Schaltflächen
+    private void customizeButton(JButton button) {
+        button.setFont(new Font("Arial", Font.BOLD, 20));
+        button.setBackground(new Color(0, 0, 128));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(new RoundedBorder(27));
+    }
 
-        if (newDifficulty >= 0 && newDifficulty <= 4) {
-            dispose();
-            new Benutzeroberfläche(newDifficulty).starten();
-        } else {
-            showGameOverMenu();
+    public void starten() {
+        SwingUtilities.invokeLater(() -> {
+            setVisible(true);
+        });
+    }
+
+    // Eigene Klasse für abgerundete Kanten der Schaltflächen
+    private static class RoundedBorder extends AbstractBorder {
+        private final int radius;
+
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
-
-
-
-    // Getter für den Schwierigkeitsgrad
-    public int getSchwierigkeitsgrad() {
-        return schwierigkeitsgrad;
-    }
-
-    // Setter für den Schwierigkeitsgrad
-    public void setSchwierigkeitsgrad(int schwierigkeitsgrad) {
-        this.schwierigkeitsgrad = schwierigkeitsgrad;
-
-    }
-
-    // Methode, um den Schwierigkeitsgrad als String zu erhalten
-    private String getSchwierigkeitsgradString() {
-        switch (schwierigkeitsgrad) {
-            case 0: return "Leicht";
-            case 1: return "Mittel";
-            case 2: return "Schwer";
-            case 3: return "Sehr Schwer";
-            case 4: return "Unmöglich";
-            default: return "Unbekannt";
-        }
-    }
-
-
-
 }
