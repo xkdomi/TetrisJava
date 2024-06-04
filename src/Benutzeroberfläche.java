@@ -105,20 +105,43 @@ public class Benutzeroberfläche extends JFrame {
 
     // Methode zum Anzeigen des Pausemenüs
     private void showPauseMenu() {
+
+
         JDialog pauseDialog = new JDialog(this, "Pause", true);
-        pauseDialog.setLayout(new GridLayout(3, 1));
-        pauseDialog.setSize(300, 200);
+        pauseDialog.setLayout(new BorderLayout());
+        pauseDialog.setSize(350, 300);// größe des Pausemenüs
         pauseDialog.setLocationRelativeTo(this);
 
+        JPanel contentPanel = new JPanel(new GridLayout(4, 1));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel titleLabel = new JLabel("Pause "); // Neue Überschrift
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPanel.add(titleLabel, BorderLayout.CENTER); // hinzufügen des Titels zum Panel
+
+        JPanel menuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Panel for the word "Menu"
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0)); // Add some padding below the "Menu"
+
+        JLabel menuLabel = new JLabel("Menü"); // Create the label with the word "Menu"
+        menuLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        menuPanel.add(menuLabel); // Add the label to the panel
+
+        contentPanel.add(titleLabel, BorderLayout.CENTER); // Headline is placed above the "Menu"
+        contentPanel.add(menuPanel, BorderLayout.SOUTH); // "Menu" is placed below the headline
+
+
+
+
         JButton continueButton = new JButton("Fortsetzen");
-        continueButton.setFont(new Font("Arial", Font.BOLD, 20));
+        customizeButton(continueButton);
         continueButton.addActionListener(e -> {
             togglePause();
             pauseDialog.dispose();
         });
 
         JButton restartButton = new JButton("Neustart");
-        restartButton.setFont(new Font("Arial", Font.BOLD, 20));
+        customizeButton(restartButton);
         restartButton.addActionListener(e -> {
             pauseDialog.dispose();
             dispose();
@@ -126,17 +149,40 @@ public class Benutzeroberfläche extends JFrame {
         });
 
         JButton exitButton = new JButton("Beenden");
-        exitButton.setFont(new Font("Arial", Font.BOLD, 20));
+        customizeButton(exitButton);
         exitButton.addActionListener(e -> {
             pauseDialog.dispose();
             System.exit(0);
         });
 
-        pauseDialog.add(continueButton);
-        pauseDialog.add(restartButton);
-        pauseDialog.add(exitButton);
+        JButton startScreenButton = new JButton("Startbildschirm"); // Added button for returning to the Startbildschirm
+        customizeButton(startScreenButton);
+        startScreenButton.addActionListener(e -> {
+            pauseDialog.dispose();
+            setVisible(false); // Hide the current Benutzeroberfläche
+            new Startbildschirm().starten(); // Show the Startbildschirm
+        });
 
+        // Reihenfolge für die Buttons im Pausemenü
+        contentPanel.add(continueButton); // Fortsetzen
+        contentPanel.add(restartButton); // Beenden
+        contentPanel.add(startScreenButton); // zum Startbilschirm
+        contentPanel.add(exitButton); //Verlassen
+
+        pauseDialog.add(contentPanel, BorderLayout.CENTER);
         pauseDialog.setVisible(true);
+    }
+
+    // Method to customize button appearance
+    private void customizeButton(JButton button) {
+        button.setBackground(new Color(0, 0, 128));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.WHITE, 2),
+                BorderFactory.createEmptyBorder(10, 20, 10, 20)
+        ));
     }
 
     // Methode zum Starten des Timers
@@ -181,6 +227,9 @@ public class Benutzeroberfläche extends JFrame {
                 null,
                 options,
                 options[0]);
+
+        UIManager.put("OptionPane.messageFont", new Font("Arial", Font.PLAIN, 16)); // Set font for message
+        UIManager.put("OptionPane.buttonFont", new Font("Arial", Font.BOLD, 14)); // Set font for buttons
 
         switch (option) {
             case 0: // Neustart

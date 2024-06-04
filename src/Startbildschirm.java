@@ -19,7 +19,7 @@ class Startbildschirm extends JFrame {
         setLayout(new BorderLayout());
 
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(51, 153, 255)); // Farbverlauf für den Header
+        headerPanel.setBackground(new Color(0, 0, 128)); // Farbverlauf für den Header
         headerPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Abstand zum Rand hinzufügen
 
         JLabel headerLabel = new JLabel("Tetris by Dominik");
@@ -36,7 +36,7 @@ class Startbildschirm extends JFrame {
 
         JButton startButton = new JButton("Spiel Starten");
         startButton.setFont(new Font("Segoe UI", Font.BOLD, 20)); // Modernere Schriftart
-        startButton.setBackground(new Color(51, 153, 255)); // Hintergrundfarbe der Schaltfläche Starten ändern
+        startButton.setBackground(new Color(0, 0, 128)); // Hintergrundfarbe der Schaltfläche Starten ändern
         startButton.setForeground(Color.WHITE); // Textfarbe auf Weiß ändern
         startButton.setFocusPainted(false); // Entferne den Fokusrahmen
         startButton.setBorder(new RoundedBorder(27)); // Verwende abgerundete Ecken
@@ -52,7 +52,7 @@ class Startbildschirm extends JFrame {
 
         JButton exitButton = new JButton("Beenden");
         exitButton.setFont(new Font("Segoe UI", Font.BOLD, 20)); // Modernere Schriftart
-        exitButton.setBackground(new Color(51, 153, 255)); // Hintergrundfarbe der Schaltfläche Beenden ändern
+        exitButton.setBackground(new Color(0, 0, 128)); // Hintergrundfarbe der Schaltfläche Beenden ändern
         exitButton.setForeground(Color.WHITE); // Textfarbe auf Weiß ändern
         exitButton.setFocusPainted(false); // Entferne den Fokusrahmen
         exitButton.setBorder(new RoundedBorder(27)); // Verwende abgerundete Ecken
