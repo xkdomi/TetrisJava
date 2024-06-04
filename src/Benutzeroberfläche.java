@@ -127,7 +127,7 @@ public class Benutzeroberfläche extends JFrame {
         pauseDialog.setLocationRelativeTo(this);
 
         JPanel contentPanel = new JPanel(new GridLayout(4, 1));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
         JLabel titleLabel = new JLabel("Pause "); // Neue Überschrift
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
@@ -135,7 +135,7 @@ public class Benutzeroberfläche extends JFrame {
         contentPanel.add(titleLabel, BorderLayout.CENTER); // hinzufügen des Titels zum Panel
 
         JPanel menuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Panel for the word "Menu"
-        menuPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0)); // Add some padding below the "Menu"
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 20, 0)); // Add some padding below the "Menu"
 
         JLabel menuLabel = new JLabel("Menü"); // Create the label with the word "Menu"
         menuLabel.setFont(new Font("Arial", Font.BOLD, 30));
