@@ -157,7 +157,7 @@ public class Benutzeroberfläche extends JFrame {
 
     // Methode zum Aktualisieren des Score-Labels
     public void updateScore() {
-        scoreLabel.setText("Score: " + spiel.getScore() + "  Highscore: " + highscore);
+        scoreLabel.setText("Score: " + spiel.getScore() + "  Highscore: " + highscore + "   Schwierigkeitsgrad: " + getSchwierigkeitsgradString());
     }
 
     // Methode, um das Spiel zu starten
@@ -218,4 +218,31 @@ public class Benutzeroberfläche extends JFrame {
             showGameOverDialog();
         }
     }
+
+
+
+    // Getter für den Schwierigkeitsgrad
+    public int getSchwierigkeitsgrad() {
+        return schwierigkeitsgrad;
+    }
+
+    // Setter für den Schwierigkeitsgrad
+    public void setSchwierigkeitsgrad(int schwierigkeitsgrad) {
+        this.schwierigkeitsgrad = schwierigkeitsgrad;
+
+    }
+
+    // Methode, um den Schwierigkeitsgrad als String zu erhalten
+    private String getSchwierigkeitsgradString() {
+        switch (schwierigkeitsgrad) {
+            case 0: return "Leicht";
+            case 1: return "Mittel";
+            case 2: return "Schwer";
+            case 3: return "Sehr Schwer";
+            case 4: return "Unmöglich";
+            default: return "Unbekannt";
+        }
+    }
+
+
 }
