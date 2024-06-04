@@ -1,87 +1,81 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// Klasse für den Startbildschirm
-class Startbildschirm extends JFrame {
-    private JComboBox<String> schwierigkeitsgradComboBox; // ComboBox zur Auswahl des Schwierigkeitsgrads
 
-    // Konstruktor zur Initialisierung des Startbildschirms
+class Startbildschirm extends JFrame {
+    private JComboBox<String> schwierigkeitsgradComboBox;
+
     public Startbildschirm() {
         initUI();
     }
 
-    // Methode zur Initialisierung der Benutzeroberfläche des Startbildschirms
     private void initUI() {
-        setTitle("Tetris Spiel");
+        setTitle("Tetris");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Panel für die Überschrift
         JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(51, 153, 255)); // Farbverlauf für den Header
+        headerPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Abstand zum Rand hinzufügen
+
         JLabel headerLabel = new JLabel("Tetris by Dominik");
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 32)); // Modernere Schriftart
+        headerLabel.setForeground(Color.WHITE); // Textfarbe auf Weiß ändern
         headerPanel.add(headerLabel);
 
-        // Panel für die Buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(3, 1, 10, 10)); // 3 Zeilen für 2 Buttons und 1 ComboBox
+        buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
+        buttonPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Abstand zum Rand hinzufügen
 
-        // Schwierigkeitsgrad-ComboBox erstellen
         schwierigkeitsgradComboBox = new JComboBox<>(new String[]{"Leicht", "Mittel", "Schwer","Sehr Schwer","Unmöglich"});
-        schwierigkeitsgradComboBox.setFont(new Font("Arial", Font.BOLD, 20));
+        schwierigkeitsgradComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 20)); // Modernere Schriftart
 
-        // Start-Button erstellen
         JButton startButton = new JButton("Spiel Starten");
-        startButton.setFont(new Font("Arial", Font.BOLD, 20));
+        startButton.setFont(new Font("Segoe UI", Font.BOLD, 20)); // Modernere Schriftart
+        startButton.setBackground(new Color(51, 153, 255)); // Hintergrundfarbe der Schaltfläche Starten ändern
+        startButton.setForeground(Color.WHITE); // Textfarbe auf Weiß ändern
+        startButton.setFocusPainted(false); // Entferne den Fokusrahmen
+        startButton.setBorder(new RoundedBorder(27)); // Verwende abgerundete Ecken
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Wähle den Schwierigkeitsgrad basierend auf der Auswahl in der ComboBox
                 int schwierigkeitsgrad = schwierigkeitsgradComboBox.getSelectedIndex();
-
-                // Neues Spiel starten
                 Benutzeroberfläche spiel = new Benutzeroberfläche(schwierigkeitsgrad);
                 spiel.starten();
-
-                // Startbildschirm ausblenden
                 setVisible(false);
             }
         });
 
-        // Beenden-Button erstellen
         JButton exitButton = new JButton("Beenden");
-        exitButton.setFont(new Font("Arial", Font.BOLD, 20));
+        exitButton.setFont(new Font("Segoe UI", Font.BOLD, 20)); // Modernere Schriftart
+        exitButton.setBackground(new Color(51, 153, 255)); // Hintergrundfarbe der Schaltfläche Beenden ändern
+        exitButton.setForeground(Color.WHITE); // Textfarbe auf Weiß ändern
+        exitButton.setFocusPainted(false); // Entferne den Fokusrahmen
+        exitButton.setBorder(new RoundedBorder(27)); // Verwende abgerundete Ecken
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Programm beenden
                 System.exit(0);
             }
         });
-
-        // ComboBox und Buttons zum Panel hinzufügen
 
         buttonPanel.add(startButton);
         buttonPanel.add(schwierigkeitsgradComboBox);
         buttonPanel.add(exitButton);
 
-        // Panels zum Fenster hinzufügen
         add(headerPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.CENTER);
-
-        // Hintergrundfarbe des Panels setzen
-        buttonPanel.setBackground(Color.LIGHT_GRAY);
+        getContentPane().setBackground(Color.WHITE); // Hintergrundfarbe auf Weiß ändern
+        setLocationRelativeTo(null);
     }
 
-    // Methode zum Starten der Benutzeroberfläche
     public void starten() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                setVisible(true); // Fenster sichtbar machen
-            }
+        SwingUtilities.invokeLater(() -> {
+            setVisible(true);
         });
     }
 }

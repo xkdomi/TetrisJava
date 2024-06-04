@@ -63,6 +63,8 @@ public class Benutzeroberfläche extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Standard-Schließoperation setzen
         setLocationRelativeTo(null); // Fenster zentrieren
 
+
+
         // KeyListener hinzufügen, um Tastendrücke zu verarbeiten
         addKeyListener(new KeyAdapter() {
             @Override
@@ -157,7 +159,7 @@ public class Benutzeroberfläche extends JFrame {
 
     // Methode zum Aktualisieren des Score-Labels
     public void updateScore() {
-        scoreLabel.setText("Score: " + spiel.getScore() + "  Highscore: " + highscore + "   Schwierigkeitsgrad: " + getSchwierigkeitsgradString());
+        scoreLabel.setText("Score: " + spiel.getScore() + "  Highscore: " + highscore + "  " + getSchwierigkeitsgradString());
     }
 
     // Methode, um das Spiel zu starten
