@@ -14,62 +14,59 @@ public class Benutzeroberfläche extends JFrame {
     private Timer timer;
     private int initialDelay;
     private int schwierigkeitsgrad;
-    private boolean isPaused; // Neue Variable für den Pausestatus
+    private boolean isPaused;
 
-    // Methode zur Initialisierung der Benutzeroberfläche
     private void initUI() {
-        spiel = new Spiel(); // Neues Spiel erstellen
-        spielfeldPanel = new SpielfeldPanel(spiel); // Neues SpielfeldPanel erstellen
+        spiel = new Spiel();
+        spielfeldPanel = new SpielfeldPanel(spiel);
 
-        // Setze Layout der Benutzeroberfläche
         setLayout(new BorderLayout());
 
-        // Score-Label erstellen und zum BorderLayout.NORTH hinzufügen
         scoreLabel = new JLabel("Score: " + spiel.getScore() + "  Highscore: " + highscore);
-        JPanel topPanel = new JPanel(new GridLayout(1, 2)); // Panel für Score und Level
-        topPanel.add(scoreLabel);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        scoreLabel.setForeground(new Color(50, 50, 50));
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(new Color(240, 240, 240));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        topPanel.add(scoreLabel, BorderLayout.WEST);
+
         add(topPanel, BorderLayout.NORTH);
+        add(createLeftGapPanel(), BorderLayout.WEST);
+        add(spielfeldPanel, BorderLayout.CENTER);
+        add(createRightGapPanel(), BorderLayout.EAST);
 
-        // Create a panel for the left gap
-        JPanel leftGapPanel = new JPanel();
-        leftGapPanel.setPreferredSize(new Dimension(15, spielfeldPanel.getHeight())); // Adjust the width as needed
-        add(leftGapPanel, BorderLayout.WEST);
+        setTitle("Tetris");
+        setSize(400, 700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        // SpielfeldPanel zum BorderLayout.CENTER hinzufügen
-        add(spielfeldPanel, BorderLayout.CENTER); // SpielfeldPanel zur Benutzeroberfläche hinzufügen
-
-        setTitle("Tetris"); // Titel des Fensters setzen
-        setSize(345, 660); // Größe des Fensters setzen (SpielfeldPanel + NextTetrominoPanel)
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Standard-Schließoperation setzen
-        setLocationRelativeTo(null); // Fenster zentrieren
-
-        // KeyListener hinzufügen, um Tastendrücke zu verarbeiten
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
                 switch (key) {
                     case KeyEvent.VK_LEFT:
-                        spiel.nachLinksBewegen(); // Tetromino nach links bewegen
+                        spiel.nachLinksBewegen();
                         break;
                     case KeyEvent.VK_RIGHT:
-                        spiel.nachRechtsBewegen(); // Tetromino nach rechts bewegen
+                        spiel.nachRechtsBewegen();
                         break;
                     case KeyEvent.VK_DOWN:
-                        spiel.fallen(); // Tetromino fallen lassen
+                        spiel.fallen();
                         break;
                     case KeyEvent.VK_UP:
-                        spiel.drehen(); // Tetromino drehen
+                        spiel.drehen();
                         break;
                     case KeyEvent.VK_SPACE:
-                        togglePause(); // Pause mit der Taste 'SPACE' umschalten
+                        togglePause();
                         break;
                 }
-                spielfeldPanel.repaint(); // SpielfeldPanel neu zeichnen
+                spielfeldPanel.repaint();
             }
         });
 
-        startTimer(); // Timer starten
+        startTimer();
     }
 
     public Benutzeroberfläche(int schwierigkeitsgrad) {
@@ -80,19 +77,19 @@ public class Benutzeroberfläche extends JFrame {
 
     private void setInitialDelay(int schwierigkeitsgrad) {
         switch (schwierigkeitsgrad) {
-            case 0: // Leicht
+            case 0:
                 initialDelay = 800;
                 break;
-            case 1: // Mittel
+            case 1:
                 initialDelay = 500;
                 break;
-            case 2: // Schwer
+            case 2:
                 initialDelay = 250;
                 break;
-            case 3: // Sehr schwer
+            case 3:
                 initialDelay = 180;
                 break;
-            case 4: // Unmöglich
+            case 4:
                 initialDelay = 3;
                 break;
             default:
@@ -100,7 +97,6 @@ public class Benutzeroberfläche extends JFrame {
         }
     }
 
-    // Methode zum Starten des Timers
     private void startTimer() {
         timer = new Timer(initialDelay, new ActionListener() {
             @Override
@@ -118,40 +114,29 @@ public class Benutzeroberfläche extends JFrame {
         timer.start();
     }
 
-    // Methode zum Pausieren/Fortsetzen des Spiels
     private void togglePause() {
         isPaused = !isPaused;
         if (isPaused) {
-            timer.stop(); // Timer stoppen, wenn pausiert
-            showPauseMenu(); // Pausemenü anzeigen
+            timer.stop();
+            showPauseMenu();
         } else {
-            startTimer(); // Timer starten, wenn fortgesetzt
+            startTimer();
         }
     }
 
-    // Methode zum Anzeigen des Pausemenüs
     private void showPauseMenu() {
         JDialog pauseDialog = new JDialog(this, "Pause", true);
         pauseDialog.setLayout(new BorderLayout());
-        pauseDialog.setSize(350, 300);// größe des Pausemenüs
+        pauseDialog.setSize(350, 300);
         pauseDialog.setLocationRelativeTo(this);
 
         JPanel contentPanel = new JPanel(new GridLayout(4, 1));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-        JLabel titleLabel = new JLabel("Pause "); // Neue Überschrift
+        JLabel titleLabel = new JLabel("Pause");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        contentPanel.add(titleLabel, BorderLayout.CENTER); // hinzufügen des Titels zum Panel
-
-        JPanel menuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        menuPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 20, 0));
-        JLabel menuLabel = new JLabel("Menü");
-        menuLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        menuPanel.add(menuLabel);
-
-        contentPanel.add(titleLabel, BorderLayout.CENTER);
-        contentPanel.add(menuPanel, BorderLayout.SOUTH);
+        contentPanel.add(titleLabel);
 
         JButton continueButton = new JButton("Fortsetzen");
         customizeButton(continueButton);
@@ -184,17 +169,16 @@ public class Benutzeroberfläche extends JFrame {
     }
 
 
+    //GameOverMenü
 
-    // Methode zum Anzeigen des Game-Over-Menüs
     private void showGameOverMenu() {
-        // Update high score if current score is greater
         if (spiel.getScore() > highscore) {
             highscore = spiel.getScore();
         }
 
         JDialog gameOverDialog = new JDialog(this, "Game Over", true);
         gameOverDialog.setLayout(new BorderLayout());
-        gameOverDialog.setSize(600, 400);
+        gameOverDialog.setSize(600, 300);
         gameOverDialog.setLocationRelativeTo(this);
 
         JPanel contentPanel = new JPanel(new GridLayout(4, 1));
@@ -205,18 +189,10 @@ public class Benutzeroberfläche extends JFrame {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPanel.add(titleLabel);
 
-        JLabel scoreLabel = new JLabel("Dein Score: " + spiel.getScore() + "   \nHighScore:  " + highscore );
+        JLabel scoreLabel = new JLabel("Your Score: " + spiel.getScore()+"  High Score: " + highscore);
         scoreLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPanel.add(scoreLabel);
-
-        JButton mainMenuButton = new JButton("Zum Startbildschirm");
-        customizeButton(mainMenuButton);
-        mainMenuButton.addActionListener(e -> {
-            gameOverDialog.dispose();
-            dispose();
-            new Startbildschirm().setVisible(true); // Gehe zum Startbildschirm
-        });
 
 
         JButton restartButton = new JButton("Neustart");
@@ -227,6 +203,14 @@ public class Benutzeroberfläche extends JFrame {
             new Benutzeroberfläche(schwierigkeitsgrad).starten();
         });
 
+        JButton mainMenuButton = new JButton("Startbildschirm");
+        customizeButton(mainMenuButton);
+        mainMenuButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            dispose();
+            new Startbildschirm().setVisible(true);
+        });
+
         JButton exitButton = new JButton("Beenden");
         customizeButton(exitButton);
         exitButton.addActionListener(e -> {
@@ -235,28 +219,42 @@ public class Benutzeroberfläche extends JFrame {
         });
 
         contentPanel.add(restartButton);
-        contentPanel.add(exitButton);
         contentPanel.add(mainMenuButton);
+        contentPanel.add(exitButton);
+
         gameOverDialog.add(contentPanel, BorderLayout.CENTER);
         gameOverDialog.setVisible(true);
     }
 
-    // Methode zum Anpassen der Schaltflächen
     private void customizeButton(JButton button) {
         button.setFont(new Font("Arial", Font.BOLD, 20));
         button.setBackground(new Color(0, 0, 128));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
         button.setBorder(new RoundedBorder(27));
+        button.setPreferredSize(new Dimension(250, 50));
+    }
+
+    private JPanel createLeftGapPanel() {
+        JPanel leftGapPanel = new JPanel();
+        leftGapPanel.setPreferredSize(new Dimension(20, spielfeldPanel.getHeight()));
+        leftGapPanel.setBackground(new Color(240, 240, 240));
+        return leftGapPanel;
+    }
+
+    private JPanel createRightGapPanel() {
+        JPanel rightGapPanel = new JPanel();
+        rightGapPanel.setPreferredSize(new Dimension(5, spielfeldPanel.getHeight()));
+        rightGapPanel.setBackground(new Color(240, 240, 240));
+        return rightGapPanel;
     }
 
     public void starten() {
-        SwingUtilities.invokeLater(() -> {
+        EventQueue.invokeLater(() -> {
             setVisible(true);
         });
     }
 
-    // Eigene Klasse für abgerundete Kanten der Schaltflächen
     private static class RoundedBorder extends AbstractBorder {
         private final int radius;
 
