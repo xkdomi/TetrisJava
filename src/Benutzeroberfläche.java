@@ -12,34 +12,11 @@ public class Benutzeroberfläche extends JFrame {
     private int initialDelay;
     private int schwierigkeitsgrad;
     private boolean isPaused; // Neue Variable für den Pausestatus
+    private static final Color[] THEME_DEFAULT = {Color.LIGHT_GRAY, Color.WHITE, Color.BLACK};
+    private static final Color[] THEME_MODERN = {new Color(51, 153, 255), Color.WHITE, Color.BLACK};
+    private Color[] currentTheme = THEME_DEFAULT; // Default theme
+    private JComboBox<String> themeComboBox;
 
-    public Benutzeroberfläche(int schwierigkeitsgrad) {
-        this.schwierigkeitsgrad = schwierigkeitsgrad;
-        setInitialDelay(schwierigkeitsgrad);
-        initUI();
-    }
-
-    private void setInitialDelay(int schwierigkeitsgrad) {
-        switch (schwierigkeitsgrad) {
-            case 0://Leicht
-                initialDelay = 800;
-                break;
-            case 1://Mittel
-                initialDelay = 500;
-                break;
-            case 2://Schwer
-                initialDelay = 250;
-                break;
-            case 3: // Sehr schwer
-                initialDelay = 180;
-                break;
-            case 4: // unmöglich
-                initialDelay = 3;
-                break;
-            default:
-                initialDelay = 1000;
-        }
-    }
 
     // Methode zur Initialisierung der Benutzeroberfläche
     private void initUI() {
@@ -55,11 +32,16 @@ public class Benutzeroberfläche extends JFrame {
         topPanel.add(scoreLabel);
         add(topPanel, BorderLayout.NORTH);
 
+        // Create a panel for the left gap
+        JPanel leftGapPanel = new JPanel();
+        leftGapPanel.setPreferredSize(new Dimension(15, spielfeldPanel.getHeight())); // Adjust the width as needed
+        add(leftGapPanel, BorderLayout.WEST);
+
         // SpielfeldPanel zum BorderLayout.CENTER hinzufügen
         add(spielfeldPanel, BorderLayout.CENTER); // SpielfeldPanel zur Benutzeroberfläche hinzufügen
 
         setTitle("Tetris"); // Titel des Fensters setzen
-        setSize(325, 660); // Größe des Fensters setzen (SpielfeldPanel + NextTetrominoPanel)
+        setSize(345, 660); // Größe des Fensters setzen (SpielfeldPanel + NextTetrominoPanel)
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Standard-Schließoperation setzen
         setLocationRelativeTo(null); // Fenster zentrieren
 
@@ -90,7 +72,39 @@ public class Benutzeroberfläche extends JFrame {
                 spielfeldPanel.repaint(); // SpielfeldPanel neu zeichnen
             }
         });
+
+
     }
+
+    public Benutzeroberfläche(int schwierigkeitsgrad) {
+        this.schwierigkeitsgrad = schwierigkeitsgrad;
+        setInitialDelay(schwierigkeitsgrad);
+        initUI();
+    }
+
+    private void setInitialDelay(int schwierigkeitsgrad) {
+        switch (schwierigkeitsgrad) {
+            case 0://Leicht
+                initialDelay = 800;
+                break;
+            case 1://Mittel
+                initialDelay = 500;
+                break;
+            case 2://Schwer
+                initialDelay = 250;
+                break;
+            case 3: // Sehr schwer
+                initialDelay = 180;
+                break;
+            case 4: // unmöglich
+                initialDelay = 3;
+                break;
+            default:
+                initialDelay = 1000;
+        }
+    }
+
+
 
     // Methode zum Pausieren/Fortsetzen des Spiels
     private void togglePause() {
@@ -205,7 +219,7 @@ public class Benutzeroberfläche extends JFrame {
 
     // Methode zum Aktualisieren des Score-Labels
     public void updateScore() {
-        scoreLabel.setText("Score: " + spiel.getScore() + "  Highscore: " + highscore + "  " + getSchwierigkeitsgradString());
+        scoreLabel.setText("     Score: " + spiel.getScore() + "  Highscore: " + highscore + "   Schwierigkeit: " + getSchwierigkeitsgradString());
     }
 
     // Methode, um das Spiel zu starten
@@ -295,5 +309,20 @@ public class Benutzeroberfläche extends JFrame {
         }
     }
 
+    // Function to set the color theme
+    public void setColorTheme(Color[] theme) {
+        currentTheme = theme;
+        // Update UI components with the new color theme
+        updateUIComponents();
+
+    }
+
+    // Method to update UI components with the new color theme
+    private void updateUIComponents() {
+        // Update background colors, font colors, etc. of UI components based on the current theme
+        getContentPane().setBackground(currentTheme[0]); // Background color
+        scoreLabel.setForeground(currentTheme[1]); // Score label font color
+        // Update other UI components as needed
+    }
 
 }

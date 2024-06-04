@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 class Startbildschirm extends JFrame {
     private JComboBox<String> schwierigkeitsgradComboBox;
 
+
     public Startbildschirm() {
         initUI();
     }
@@ -33,6 +34,8 @@ class Startbildschirm extends JFrame {
 
         schwierigkeitsgradComboBox = new JComboBox<>(new String[]{"Leicht", "Mittel", "Schwer","Sehr Schwer","Unmöglich"});
         schwierigkeitsgradComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 20)); // Modernere Schriftart
+        schwierigkeitsgradComboBox.setBackground(new Color(65, 105, 225));
+        schwierigkeitsgradComboBox.setForeground(Color.WHITE); // Textfarbe auf Weiß ändern
 
         JButton startButton = new JButton("Spiel Starten");
         startButton.setFont(new Font("Segoe UI", Font.BOLD, 20)); // Modernere Schriftart
@@ -40,6 +43,8 @@ class Startbildschirm extends JFrame {
         startButton.setForeground(Color.WHITE); // Textfarbe auf Weiß ändern
         startButton.setFocusPainted(false); // Entferne den Fokusrahmen
         startButton.setBorder(new RoundedBorder(27)); // Verwende abgerundete Ecken
+
+
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,7 +76,15 @@ class Startbildschirm extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
         getContentPane().setBackground(Color.WHITE); // Hintergrundfarbe auf Weiß ändern
         setLocationRelativeTo(null);
+
+
+        add(headerPanel, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.CENTER);
+        getContentPane().setBackground(Color.WHITE);
+        setLocationRelativeTo(null);
     }
+
+
 
     public void starten() {
         SwingUtilities.invokeLater(() -> {
