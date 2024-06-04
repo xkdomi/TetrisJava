@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -12,10 +14,8 @@ public class Benutzeroberfläche extends JFrame {
     private int initialDelay;
     private int schwierigkeitsgrad;
     private boolean isPaused; // Neue Variable für den Pausestatus
-    private static final Color[] THEME_DEFAULT = {Color.LIGHT_GRAY, Color.WHITE, Color.BLACK};
-    private static final Color[] THEME_MODERN = {new Color(51, 153, 255), Color.WHITE, Color.BLACK};
-    private Color[] currentTheme = THEME_DEFAULT; // Default theme
-    private JComboBox<String> themeComboBox;
+
+
 
 
     // Methode zur Initialisierung der Benutzeroberfläche
@@ -134,15 +134,14 @@ public class Benutzeroberfläche extends JFrame {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPanel.add(titleLabel, BorderLayout.CENTER); // hinzufügen des Titels zum Panel
 
-        JPanel menuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Panel for the word "Menu"
-        menuPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 20, 0)); // Add some padding below the "Menu"
-
-        JLabel menuLabel = new JLabel("Menü"); // Create the label with the word "Menu"
+        JPanel menuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 20, 0));
+        JLabel menuLabel = new JLabel("Menü");
         menuLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        menuPanel.add(menuLabel); // Add the label to the panel
+        menuPanel.add(menuLabel);
 
-        contentPanel.add(titleLabel, BorderLayout.CENTER); // Headline is placed above the "Menu"
-        contentPanel.add(menuPanel, BorderLayout.SOUTH); // "Menu" is placed below the headline
+        contentPanel.add(titleLabel, BorderLayout.CENTER);
+        contentPanel.add(menuPanel, BorderLayout.SOUTH);
 
 
 
@@ -173,8 +172,8 @@ public class Benutzeroberfläche extends JFrame {
         customizeButton(startScreenButton);
         startScreenButton.addActionListener(e -> {
             pauseDialog.dispose();
-            setVisible(false); // Hide the current Benutzeroberfläche
-            new Startbildschirm().starten(); // Show the Startbildschirm
+            setVisible(false);
+            new Startbildschirm().starten(); // Zeige den Startbildschirm
         });
 
         // Reihenfolge für die Buttons im Pausemenü
@@ -211,7 +210,7 @@ public class Benutzeroberfläche extends JFrame {
                 updateScore();
             } else if (spiel.istSpielVorbei()) {
                 ((Timer) e.getSource()).stop();
-                showGameOverDialog();
+                showGameOverMenu();
             }
         });
         timer.start();
@@ -230,38 +229,51 @@ public class Benutzeroberfläche extends JFrame {
         });
     }
 
-    // Methode, um das Spiel vorbei Dialog anzuzeigen
-    private void showGameOverDialog() {
-        String[] options = {"Neustart", "Schwierigkeit ändern", "Verlassen"};
-        int option = JOptionPane.showOptionDialog(this,
-                "Game Over!\nDein Score: " + spiel.getScore() + "\nHighscore: " + highscore + "\nWas möchtest du tun?",
-                "Game Over",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
+    private void showGameOverMenu() {
+        JDialog gameOverDialog = new JDialog(this, "Game Over", true);
+        gameOverDialog.setLayout(new BorderLayout());
+        gameOverDialog.setSize(350, 300);
+        gameOverDialog.setLocationRelativeTo(this);
 
-        UIManager.put("OptionPane.messageFont", new Font("Arial", Font.PLAIN, 16)); // Set font for message
-        UIManager.put("OptionPane.buttonFont", new Font("Arial", Font.BOLD, 14)); // Set font for buttons
+        JPanel contentPanel = new JPanel(new GridLayout(4, 1));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-        switch (option) {
-            case 0: // Neustart
+        JLabel titleLabel = new JLabel("Game Over");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPanel.add(titleLabel, BorderLayout.CENTER);
+
+        JLabel scoreLabel = new JLabel("Your Score: " + spiel.getScore());
+        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPanel.add(scoreLabel, BorderLayout.CENTER);
+
+        JButton restartButton = new JButton("Restart");
+        restartButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameOverDialog.dispose();
+                new Benutzeroberfläche(schwierigkeitsgrad).setVisible(true);
                 dispose();
-                new Benutzeroberfläche(schwierigkeitsgrad).starten();
-                break;
-            case 1: // Schwierigkeit ändern
-                changeDifficulty();
-                break;
-            case 2: // Verlassen
+            }
+        });
+
+        JButton returnToMenuButton = new JButton("Return to Menu");
+        returnToMenuButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        returnToMenuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameOverDialog.dispose();
+                new Startbildschirm().starten();
                 dispose();
-                System.exit(0);
-                break;
-            default:
-                dispose();
-                System.exit(0);
-                break;
-        }
+            }
+        });
+
+        contentPanel.add(restartButton);
+        contentPanel.add(returnToMenuButton);
+        gameOverDialog.add(contentPanel);
+        gameOverDialog.setVisible(true);
     }
 
     // Methode, um die Schwierigkeit zu ändern
@@ -280,7 +292,7 @@ public class Benutzeroberfläche extends JFrame {
             dispose();
             new Benutzeroberfläche(newDifficulty).starten();
         } else {
-            showGameOverDialog();
+            showGameOverMenu();
         }
     }
 
@@ -309,20 +321,6 @@ public class Benutzeroberfläche extends JFrame {
         }
     }
 
-    // Function to set the color theme
-    public void setColorTheme(Color[] theme) {
-        currentTheme = theme;
-        // Update UI components with the new color theme
-        updateUIComponents();
 
-    }
-
-    // Method to update UI components with the new color theme
-    private void updateUIComponents() {
-        // Update background colors, font colors, etc. of UI components based on the current theme
-        getContentPane().setBackground(currentTheme[0]); // Background color
-        scoreLabel.setForeground(currentTheme[1]); // Score label font color
-        // Update other UI components as needed
-    }
 
 }
