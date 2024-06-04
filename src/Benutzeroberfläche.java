@@ -87,7 +87,7 @@ public class Benutzeroberfläche extends JFrame {
                 initialDelay = 250;
                 break;
             case 3:
-                initialDelay = 180;
+                initialDelay = 170;
                 break;
             case 4:
                 initialDelay = 3;
