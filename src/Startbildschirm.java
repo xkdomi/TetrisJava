@@ -32,6 +32,7 @@ class Startbildschirm extends JFrame {
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
         buttonPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Abstand zum Rand hinzufügen
 
+
         schwierigkeitsgradComboBox = new JComboBox<>(new String[]{"Leicht", "Mittel", "Schwer","Sehr Schwer","Unmöglich"});
         schwierigkeitsgradComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 20)); // Modernere Schriftart
         schwierigkeitsgradComboBox.setBackground(new Color(65, 105, 225));
